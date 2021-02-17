@@ -18,6 +18,10 @@ services:
       WORDPRESS_LOGGED_IN_SALT:
       WORDPRESS_NONCE_SALT:
       WORDPRESS_DEBUG:
+      WORDPRESS_CONFIG_EXTRA:
+        |
+        define ( 'WP_SITEURL', '${PUBLIC_HOSTNAME}${WORDPRESS_PATH}' );
+        define ( 'WP_HOME', '${PUBLIC_HOSTNAME}${WORDPRESS_PATH}' );
     networks:
       blog-medioambiente-net:
       traefik-net:

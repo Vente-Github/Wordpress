@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  wordpress:
+    image: ${IMAGE_NAME:-wordpress}:${IMAGE_TAG:-latest}
+    environment:
+      WORDPRESS_DB_HOST:
+      WORDPRESS_DB_USER:
+      WORDPRESS_DB_PASSWORD:
+      WORDPRESS_DB_NAME:
+      WORDPRESS_TABLE_PREFIX:
+      WORDPRESS_AUTH_KEY:
+      WORDPRESS_SECURE_AUTH_KEY:
+      WORDPRESS_LOGGED_IN_KEY:
+      WORDPRESS_NONCE_KEY:
+      WORDPRESS_AUTH_SALT:
+      WORDPRESS_SECURE_AUTH_SALT:
+      WORDPRESS_LOGGED_IN_SALT:
+      WORDPRESS_NONCE_SALT:
+      WORDPRESS_DEBUG:
+    networks:
+      blog-medioambiente-net:
+      traefik-net:
+    volumes:
+      - wordpress-data-vol:${WORDPRESS_DATA_PATH}
+    deploy:
+      mode: replicated
+      replicas: ${REPLICAS:-1}
+      restart_policy:
+        delay: ${RESTART_DELAY:-0s}
+      update_config:
+        delay: ${UPDATE_DELAY:-1m}
+      resources:
+        limits:
+          cpus: '${RESOURCES_LIMITS_CPUS:-1}'
+          memory: ${RESOURCES_LIMITS_MEMORY:-128M}
+        reservations:
+          cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${RESOURCES_RESERVATIONS_MEMORY:-32M}
+      labels:
+        traefik.enable: 'true'
+        traefik.http.routers.wordpress.entrypoints: http
+        traefik.http.routers.wordpress.rule: PathPrefix(`${WORDPRESS_PATH}`)
+        traefik.http.routers.wordpress.service: wordpress
+        traefik.http.services.wordpress.loadbalancer.server.port: '${WORDPRESS_PORT}'      
+
+networks:
+  traefik-net:
+    name: ${TRAEFIK_NET_NAME:-traefik-net}
+    driver: ${TRAEFIK_NET_DRIVER:-overlay}
+    external: true
+  blog-medioambiente-net:
+    name: ${BLOG_MEDIOAMBIENTE_NAME:-blog-medioambiente-net}
+    external: true
+
+volumes:
+  wordpress-data-vol:
+    name: ${WORDPRESS_DATA_VOL_NAME:-wordpress-data-vol}

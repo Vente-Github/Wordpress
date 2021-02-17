@@ -1,0 +1,17 @@
+include:
+  - project: 'cabildo-tf/vente/gitlab-ci-templates'
+    ref: master
+    file: '/deployment.yml'
+
+stages:
+  - deploy
+
+variables:
+  PROJECT_PARENT_NAME: blog
+
+.deploy:
+  variables:
+    STACK: ${PROJECT_PARENT_NAME}
+    SERVICES_TO_CHECK: ${PROJECT_PARENT_NAME}_${CI_PROJECT_NAME}
+  environment:
+    url: https://${PUBLIC_HOSTNAME}

@@ -46,7 +46,7 @@ services:
         traefik.http.routers.wordpress.entrypoints: http
         traefik.http.routers.wordpress.rule: PathPrefix(`${WORDPRESS_PATH}`)
         traefik.http.routers.wordpress.service: wordpress
-        traefik.http.services.wordpress.loadbalancer.server.port: '${WORDPRESS_PORT}'      
+        traefik.http.services.wordpress.loadbalancer.server.port: '${WORDPRESS_PORT}'
 
 networks:
   traefik-net:

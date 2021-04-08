@@ -44,7 +44,9 @@ services:
       labels:
         traefik.enable: 'true'
         traefik.http.routers.wordpress.entrypoints: http
-        traefik.http.routers.wordpress.rule: PathPrefix(`${WORDPRESS_PATH}`)
+        traefik.http.routers.wordpress.rule: Host(`vente-pre.tenerife.es`) && PathPrefix(`${WORDPRESS_PATH}`)
+        traefik.http.routers.wordpress.middlewares: wordpress-customrequest
+        traefik.http.middlewares.wordpress-customrequest.headers.customrequestheaders.X-Forwarded-Proto: https
         traefik.http.routers.wordpress.service: wordpress
         traefik.http.services.wordpress.loadbalancer.server.port: '${WORDPRESS_PORT}'
 

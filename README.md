@@ -23,19 +23,23 @@ php_value upload_max_filesize 256M
 
 ## Backup
 
-Conectarse al minio
+Conectarse al minio.
+
 ```bash
 mc alias set minio https://minio.vente.tenerife.int
 ```
 
-Creación del usuario
+Creación del usuario.
+
 ```bash
 mc admin user add minio wp-backup-user
 mc admin group add minio wp-backup-group wp-backup-user
 ```
 
-Crear un fichero wp-backup-policy.json
-```
+Crear política de acceso al bucket.
+
+```bash
+mc admin policy add minio wp-backup-policy --insecure <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -75,17 +79,35 @@ Crear un fichero wp-backup-policy.json
         }
     ]
 }
+EOF
 ```
 
 Se aplican las políticas al grupo.
 
 ```bash
-mc admin policy add minio wp-backup-policy wp-backup-policy.json
 mc admin policy set minio wp-backup-policy group=wp-backup-group
 ```
 
-Se crea el bucket
+Se crea el bucket.
 
 ```bash
-mc mb minio/wp-backups
+mc mb minio/wp-backups --insecure
+```
+
+Aplica política de retención de backups 2 días.
+
+```bash
+mc ilm import minio/wp-backups --insecure <<EOF
+{
+  "Rules": [
+   {
+    "Expiration": {
+     "Days": 2
+    },
+    "ID": "deleteOldBackups",
+    "Status": "Enabled"
+   }
+  ]
+}
+EOF
 ```

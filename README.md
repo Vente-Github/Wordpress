@@ -36,10 +36,9 @@ mc admin user add minio wp-backup-user
 mc admin group add minio wp-backup-group wp-backup-user
 ```
 
-Crear política de acceso al bucket.
+Crear un fichero wp-backup-policy.json
 
 ```bash
-mc admin policy add minio wp-backup-policy --insecure <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -79,7 +78,12 @@ mc admin policy add minio wp-backup-policy --insecure <<EOF
         }
     ]
 }
-EOF
+```
+
+Crear política de acceso al bucket.
+
+```bash
+mc admin policy add minio wp-backup-policy wp-backup-policy.json
 ```
 
 Se aplican las políticas al grupo.

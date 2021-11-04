@@ -1,20 +1,9 @@
 include:
   - project: 'cabildo-tf/vente/gitlab-ci-templates'
     ref: master
-    file: '/packaging.yml'
-  - project: 'cabildo-tf/vente/gitlab-ci-templates'
-    ref: master
     file: '/deployment.yml'
-  - project: 'redmic-project/gitlab-ci-templates'
-    ref: master
-    file: '/deployment-custom-image.yml'
-
 
 stages:
-  - build
-  - pre-package
-  - package
-  - post-package
   - deploy
 
 variables:

@@ -27,6 +27,7 @@ services:
       traefik-net:
     volumes:
       - wordpress-data-vol:${WORDPRESS_DATA_PATH}
+      - wordpress-backup-vol:/backup
     deploy:
       mode: replicated
       replicas: ${REPLICAS:-1}
@@ -62,3 +63,10 @@ networks:
 volumes:
   wordpress-data-vol:
     name: ${WORDPRESS_DATA_VOL_NAME:-wordpress-data-vol}
+
+  wordpress-backup-vol:
+    name: ${WORDPRESS_BACKUP_VOLUME_NAME:-wordpress-backup-vol}
+    driver_opts:
+      type: ${NFS_VOL_TYPE}
+      o: ${NFS_VOL_OPTIONS}
+      device: ${NFS_VOL_WORDPRESS_BACKUP_DEVICE}
